@@ -6,7 +6,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/jackc/pgx/v5"
-	config "github.com/sk-pathak/go-structure/configs"
+	"github.com/sk-pathak/go-structure/configs"
 	"github.com/sk-pathak/go-structure/internal/app/handler"
 	"github.com/sk-pathak/go-structure/internal/app/repository"
 	"github.com/sk-pathak/go-structure/internal/app/routes"
