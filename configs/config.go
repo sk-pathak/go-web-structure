@@ -7,14 +7,17 @@ import (
 )
 
 type Config struct {
-    Port         string
-    DBDriver     string
-    DBUser       string
-    DBPassword   string
-    DBHost       string
-    DBPort       string
-    DBName       string
-    LogLevel     string
+	Port         		string
+	DBDriver     		string
+	DBUser       		string
+	DBPassword   		string
+	DBHost       		string
+	DBPort       		string
+	DBName       		string
+	LogLevel     		string
+	GooseDriver 		string
+	GooseDBString 		string
+	GooseMigrationDir   string
 }
 
 func LoadConfig() (*Config, error) {
@@ -24,14 +27,17 @@ func LoadConfig() (*Config, error) {
     }
 
     return &Config{
-        Port:       getEnv("PORT", "8080"),
-        DBDriver:   getEnv("DB_DRIVER", "postgres"),
-        DBUser:     getEnv("DB_USER", "sumit_pathak"),
-        DBPassword: getEnv("DB_PASSWORD", "19209449"),
-        DBHost:     getEnv("DB_HOST", "localhost"),
-        DBPort:     getEnv("DB_PORT", "5432"),
-        DBName:     getEnv("DB_NAME", "go-database"),
-        LogLevel:   getEnv("LOG_LEVEL", "info"),
+        Port:       		getEnv("PORT", "8080"),
+        DBDriver:   		getEnv("DB_DRIVER", "postgres"),
+        DBUser:     		getEnv("DB_USER", "postgres"),
+        DBPassword: 		getEnv("DB_PASSWORD", "password"),
+        DBHost:     		getEnv("DB_HOST", "localhost"),
+        DBPort:     		getEnv("DB_PORT", "5432"),
+        DBName:     		getEnv("DB_NAME", "postgres"),
+        LogLevel:   		getEnv("LOG_LEVEL", "info"),
+		GooseDriver: 		getEnv("GOOSE_DRIVER", "postgres"),
+		GooseDBString:  	getEnv("GOOSE_DBSTRING", ""),
+		GooseMigrationDir: 	getEnv("GOOSE_MIGRATION_DIR",""),
     }, nil
 }
 

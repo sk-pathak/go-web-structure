@@ -5,7 +5,7 @@ import (
 	"log"
 
 	"github.com/gin-gonic/gin"
-	"github.com/jackc/pgx/v5"
+	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/sk-pathak/go-structure/configs"
 	"github.com/sk-pathak/go-structure/internal/app/handler"
 	"github.com/sk-pathak/go-structure/internal/app/repository"
@@ -20,43 +20,28 @@ func main() {
 		log.Fatal("Error loading configuration:", err)
 	}
 
-	connStr := "user=" + cfg.DBUser +
-		" password=" + cfg.DBPassword +
-		" host=" + cfg.DBHost +
-		" port=" + cfg.DBPort +
-		" dbname=" + cfg.DBName +
-		" sslmode=disable"
+    connStr := cfg.DBDriver + "://" + cfg.DBUser + ":" + cfg.DBPassword + "@" + cfg.DBHost + ":" + cfg.DBPort + "/" + cfg.DBName
 
-	// Establish connection to PostgreSQL using pgx
-	pgConn, err := pgx.Connect(context.Background(), connStr)
+    dbPool, err := pgxpool.New(context.Background(), connStr)
 	if err != nil {
 		log.Fatal("Error connecting to the database:", err)
 	}
+    defer dbPool.Close()
 
-	// Ensure the connection is open and working
-	if err := pgConn.Ping(context.Background()); err != nil {
+	if err := dbPool.Ping(context.Background()); err != nil {
 		log.Fatal("Error pinging database:", err)
 	}
 
-	// Initialize the db.Queries instance using the pgx connection
-	queries := db.New(pgConn)
+	queries := db.New(dbPool)
 
-	// Create repositories using the generated queries
 	userRepo := repository.NewUserRepository(queries)
-
-	// Create services
 	userService := service.NewUserService(userRepo)
-
-	// Create handlers
 	userHandler := handler.NewUserHandler(userService)
 
-	// Initialize Gin router
 	r := gin.Default()
 
-	// Register routes
 	routes.RegisterUserRoutes(r, userHandler)
 
-	// Start the server using the port defined in the configuration
 	log.Printf("Server is running on port %s", cfg.Port)
 	log.Fatal(r.Run(":" + cfg.Port))
 }

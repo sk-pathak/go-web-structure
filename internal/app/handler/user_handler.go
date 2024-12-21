@@ -2,6 +2,7 @@ package handler
 
 import (
 	"net/http"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 	"github.com/sk-pathak/go-structure/internal/app/service"
@@ -12,12 +13,10 @@ type UserHandler struct {
 	service *service.UserService
 }
 
-// NewUserHandler creates a new UserHandler
 func NewUserHandler(service *service.UserService) *UserHandler {
 	return &UserHandler{service: service}
 }
 
-// CreateUser handles POST /users
 func (h *UserHandler) CreateUser(c *gin.Context) {
 	var user db.User
 	if err := c.ShouldBindJSON(&user); err != nil {
@@ -25,7 +24,6 @@ func (h *UserHandler) CreateUser(c *gin.Context) {
 		return
 	}
 
-	// Extract context from Gin's context
 	ctx := c.Request.Context()
 
 	if err := h.service.CreateUser(ctx, &user); err != nil {
@@ -36,9 +34,7 @@ func (h *UserHandler) CreateUser(c *gin.Context) {
 	c.JSON(http.StatusCreated, user)
 }
 
-// GetUsers handles GET /users
 func (h *UserHandler) GetUsers(c *gin.Context) {
-	// Extract context from Gin's context
 	ctx := c.Request.Context()
 
 	users, err := h.service.GetAllUsers(ctx)
@@ -47,4 +43,22 @@ func (h *UserHandler) GetUsers(c *gin.Context) {
 		return
 	}
 	c.JSON(http.StatusOK, users)
+}
+
+func (h *UserHandler) GetUser(c *gin.Context) {
+	idStr := c.Param("id")
+	id, err := strconv.ParseInt(idStr, 10, 64)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid user ID"})
+		return
+	}
+
+	ctx := c.Request.Context()
+
+	user, err := h.service.GetUser(ctx, id)
+	if err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": "User not found"})
+		return
+	}
+	c.JSON(http.StatusOK, user)
 }

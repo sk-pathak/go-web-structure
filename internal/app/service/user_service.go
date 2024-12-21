@@ -12,12 +12,10 @@ type UserService struct {
 	repo *repository.UserRepository
 }
 
-// NewUserService creates a new UserService
 func NewUserService(repo *repository.UserRepository) *UserService {
 	return &UserService{repo: repo}
 }
 
-// CreateUser creates a new user
 func (s *UserService) CreateUser(ctx context.Context, user *db.User) error {
 	if err := s.repo.SaveUser(ctx, user); err != nil {
 		return errors.New("failed to create user in repository: " + err.Error())
@@ -25,11 +23,18 @@ func (s *UserService) CreateUser(ctx context.Context, user *db.User) error {
 	return nil
 }
 
-// GetAllUsers retrieves all users
 func (s *UserService) GetAllUsers(ctx context.Context) ([]db.User, error) {
 	users, err := s.repo.GetAllUsers(ctx)
 	if err != nil {
 		return nil, errors.New("failed to retrieve users from repository: " + err.Error())
 	}
 	return users, nil
+}
+
+func (s *UserService) GetUser(ctx context.Context, id int64) (db.User, error) {
+	user, err := s.repo.GetUser(ctx, id)
+	if err != nil {
+		return db.User{}, errors.New("failed to retrieve user from repository: " + err.Error())
+	}
+	return user, nil
 }
