@@ -18,6 +18,11 @@ type Config struct {
 	GooseDriver 		string
 	GooseDBString 		string
 	GooseMigrationDir   string
+	GoogleClientID 		string
+	GoogleClientSecret  string
+	GithubClientID 		string
+	GithubClientSecret  string
+	SessionSecret 		string
 }
 
 func LoadConfig() (*Config, error) {
@@ -35,9 +40,18 @@ func LoadConfig() (*Config, error) {
         DBPort:     		getEnv("DB_PORT", "5432"),
         DBName:     		getEnv("DB_NAME", "postgres"),
         LogLevel:   		getEnv("LOG_LEVEL", "info"),
+
 		GooseDriver: 		getEnv("GOOSE_DRIVER", "postgres"),
 		GooseDBString:  	getEnv("GOOSE_DBSTRING", ""),
 		GooseMigrationDir: 	getEnv("GOOSE_MIGRATION_DIR",""),
+
+		GoogleClientID: 	getEnv("GOOGLE_CLIENT_ID", ""),
+		GoogleClientSecret: getEnv("GOOGLE_CLIENT_SECRET", ""),
+
+		GithubClientID: 	getEnv("GITHUB_CLIENT_ID", ""),
+		GithubClientSecret: getEnv("GITHUB_CLIENT_SECRET", ""),
+
+		SessionSecret: 		getEnv("SESSION_SECRET", "randomString"),
     }, nil
 }
 

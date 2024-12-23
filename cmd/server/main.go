@@ -6,12 +6,13 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/jackc/pgx/v5/pgxpool"
-	"github.com/sk-pathak/go-structure/configs"
-	"github.com/sk-pathak/go-structure/internal/app/handler"
-	"github.com/sk-pathak/go-structure/internal/app/repository"
-	"github.com/sk-pathak/go-structure/internal/app/routes"
-	"github.com/sk-pathak/go-structure/internal/app/service"
-	"github.com/sk-pathak/go-structure/internal/db"
+	config "github.com/sk-pathak/go-structure/configs"
+	"github.com/sk-pathak/go-structure/internal/app/auth"
+	handler "github.com/sk-pathak/go-structure/internal/app/handler"
+	repo "github.com/sk-pathak/go-structure/internal/app/repository"
+	routes "github.com/sk-pathak/go-structure/internal/app/routes"
+	service "github.com/sk-pathak/go-structure/internal/app/service"
+	db "github.com/sk-pathak/go-structure/internal/db"
 )
 
 func main() {
@@ -34,13 +35,17 @@ func main() {
 
 	queries := db.New(dbPool)
 
-	userRepo := repository.NewUserRepository(queries)
+	userRepo := repo.NewUserRepository(queries)
 	userService := service.NewUserService(userRepo)
 	userHandler := handler.NewUserHandler(userService)
+
+	auth.NewAuth()
+	authHandler := handler.NewAuthHandler(service.NewAuthService([]byte(cfg.SessionSecret)))
 
 	r := gin.Default()
 
 	routes.RegisterUserRoutes(r, userHandler)
+	routes.RegisterAuthRoutes(r, authHandler)
 
 	log.Printf("Server is running on port %s", cfg.Port)
 	log.Fatal(r.Run(":" + cfg.Port))
