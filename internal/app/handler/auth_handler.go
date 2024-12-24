@@ -17,6 +17,12 @@ func NewAuthHandler(authService *service.AuthService) *AuthHandler {
 	}
 }
 
+func (h *AuthHandler) Home(c *gin.Context) {
+	c.JSON(http.StatusOK, gin.H{
+		"message": "Welcome to the OAuth Demo! Available providers: Google, GitHub, etc.",
+	})
+}
+
 func (h *AuthHandler) BeginAuth(c *gin.Context) {
 	provider := c.DefaultQuery("provider", "")
 	if provider == "" {

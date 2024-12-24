@@ -6,6 +6,7 @@ import (
 )
 
 func RegisterAuthRoutes(r *gin.Engine, authHandler *handler.AuthHandler) {
+	r.GET("/", authHandler.Home)
 	r.GET("/auth/begin", authHandler.BeginAuth)
 	r.GET("/auth/complete", authHandler.CompleteAuth)
 	r.GET("/auth/logout", authHandler.Logout)
