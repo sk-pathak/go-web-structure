@@ -38,10 +38,10 @@ func NewAuth() {
 
 	gothic.Store = store
 	goth.UseProviders(
-		google.New(googleClientID, googleClientSecret, "http://127.0.0.1:8080"),
+		google.New(googleClientID, googleClientSecret, "http://localhost:8080/auth/complete?provider=google"),
 	)
 
 	goth.UseProviders(
-		github.New(githubClientID, githubClientSecret, "http://localhost:8080"),
+		github.New(githubClientID, githubClientSecret, "http://localhost:8080/auth/complete?provider=github"),
 	)
 }

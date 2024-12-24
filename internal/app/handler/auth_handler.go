@@ -30,7 +30,7 @@ func (h *AuthHandler) BeginAuth(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"url": url})
+	c.Redirect(http.StatusFound, url)
 }
 
 func (h *AuthHandler) CompleteAuth(c *gin.Context) {
