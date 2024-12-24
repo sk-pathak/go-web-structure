@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"context"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -24,12 +25,13 @@ func (h *AuthHandler) Home(c *gin.Context) {
 }
 
 func (h *AuthHandler) BeginAuth(c *gin.Context) {
-	provider := c.DefaultQuery("provider", "")
+	provider := c.Param("provider")
 	if provider == "" {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Provider not specified"})
 		return
 	}
 
+	c.Request = c.Request.WithContext(context.WithValue(c.Request.Context(), "provider", provider))
 	url, err := h.AuthService.BeginAuth(provider, c)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
@@ -40,12 +42,13 @@ func (h *AuthHandler) BeginAuth(c *gin.Context) {
 }
 
 func (h *AuthHandler) CompleteAuth(c *gin.Context) {
-	provider := c.DefaultQuery("provider", "")
+	provider := c.Param("provider")
 	if provider == "" {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Provider not specified"})
 		return
 	}
 
+	c.Request = c.Request.WithContext(context.WithValue(c.Request.Context(), "provider", provider))
 	user, err := h.AuthService.CompleteAuth(c)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
@@ -59,6 +62,7 @@ func (h *AuthHandler) CompleteAuth(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{"user": user})
+	// c.Redirect(http.StatusFound, "/")
 }
 
 func (h *AuthHandler) GetUserSession(c *gin.Context) {

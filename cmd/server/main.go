@@ -13,6 +13,7 @@ import (
 	routes "github.com/sk-pathak/go-structure/internal/app/routes"
 	service "github.com/sk-pathak/go-structure/internal/app/service"
 	db "github.com/sk-pathak/go-structure/internal/db"
+	middlewares "github.com/sk-pathak/go-structure/internal/middlewares"
 )
 
 func main() {
@@ -39,13 +40,14 @@ func main() {
 	userService := service.NewUserService(userRepo)
 	userHandler := handler.NewUserHandler(userService)
 
-	auth.NewAuth()
+	store := auth.NewAuth()
 	authHandler := handler.NewAuthHandler(service.NewAuthService([]byte(cfg.SessionSecret)))
 
 	r := gin.Default()
+	r.Use(middlewares.SetupCORS())
 
-	routes.RegisterUserRoutes(r, userHandler)
 	routes.RegisterAuthRoutes(r, authHandler)
+	routes.RegisterUserRoutes(r, userHandler, store)
 
 	log.Printf("Server is running on port %s", cfg.Port)
 	log.Fatal(r.Run(":" + cfg.Port))

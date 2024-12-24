@@ -16,7 +16,7 @@ const (
 	isProd = false
 )
 
-func NewAuth() {
+func NewAuth() *sessions.CookieStore {
 	cfg, err := config.LoadConfig()
 	if err != nil {
 		log.Fatal("Error loading configuration:", err)
@@ -38,10 +38,12 @@ func NewAuth() {
 
 	gothic.Store = store
 	goth.UseProviders(
-		google.New(googleClientID, googleClientSecret, "http://localhost:8080/auth/complete?provider=google"),
+		google.New(googleClientID, googleClientSecret, "http://localhost:8080/auth/google/complete"),
 	)
 
 	goth.UseProviders(
-		github.New(githubClientID, githubClientSecret, "http://localhost:8080/auth/complete?provider=github"),
+		github.New(githubClientID, githubClientSecret, "http://localhost:8080/auth/github/complete"),
 	)
+
+	return store
 }
