@@ -22,13 +22,13 @@ func main() {
 		log.Fatal("Error loading configuration:", err)
 	}
 
-    connStr := cfg.DBDriver + "://" + cfg.DBUser + ":" + cfg.DBPassword + "@" + cfg.DBHost + ":" + cfg.DBPort + "/" + cfg.DBName
+	connStr := cfg.DBDriver + "://" + cfg.DBUser + ":" + cfg.DBPassword + "@" + cfg.DBHost + ":" + cfg.DBPort + "/" + cfg.DBName
 
-    dbPool, err := pgxpool.New(context.Background(), connStr)
+	dbPool, err := pgxpool.New(context.Background(), connStr)
 	if err != nil {
 		log.Fatal("Error connecting to the database:", err)
 	}
-    defer dbPool.Close()
+	defer dbPool.Close()
 
 	if err := dbPool.Ping(context.Background()); err != nil {
 		log.Fatal("Error pinging database:", err)

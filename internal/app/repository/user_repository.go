@@ -16,8 +16,8 @@ func NewUserRepository(queries *db.Queries) *UserRepository {
 
 func (r *UserRepository) SaveUser(ctx context.Context, user *db.User) error {
 	_, err := r.queries.CreateUser(ctx, db.CreateUserParams{
-		Name:  user.Name,
-		Email: user.Email,
+		Name:     user.Name,
+		Email:    user.Email,
 		Username: user.Username,
 		Password: user.Password,
 	})
@@ -33,9 +33,9 @@ func (r *UserRepository) GetAllUsers(ctx context.Context) ([]db.User, error) {
 	var result []db.User
 	for _, u := range users {
 		result = append(result, db.User{
-			ID:    u.ID,
-			Name:  u.Name,
-			Email: u.Email,
+			ID:       u.ID,
+			Name:     u.Name,
+			Email:    u.Email,
 			Username: u.Username,
 			Password: u.Password,
 		})
@@ -51,9 +51,9 @@ func (r *UserRepository) GetUser(ctx context.Context, id int64) (db.User, error)
 	}
 
 	result := db.User{
-		ID: user.ID,
-		Name:  user.Name,
-		Email: user.Email,
+		ID:       user.ID,
+		Name:     user.Name,
+		Email:    user.Email,
 		Username: user.Username,
 		Password: user.Password,
 	}

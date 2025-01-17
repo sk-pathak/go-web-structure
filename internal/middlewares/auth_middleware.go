@@ -1,9 +1,9 @@
 package middlewares
 
 import (
-	"net/http"
 	"github.com/gin-gonic/gin"
 	"github.com/gorilla/sessions"
+	"net/http"
 )
 
 func AuthMiddleware(store sessions.Store) gin.HandlerFunc {

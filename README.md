@@ -57,3 +57,6 @@ routes->handler->service->repo
 - local postgres -> ```docker build -t go-structure``` then ```docker run -it --name go-structure --network host go-structure:latest``` (network host so that it connects to localhost of host machine)
 
 - postgres in docker -> ```docker compose up --build```
+
+### concurrency
+concurrency is managing multiple tasks at the same time. Parallelism is executing multiple tasks at the same time.

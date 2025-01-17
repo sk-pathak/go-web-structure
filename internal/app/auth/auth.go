@@ -6,13 +6,13 @@ import (
 	"github.com/gorilla/sessions"
 	"github.com/markbates/goth"
 	"github.com/markbates/goth/gothic"
-	"github.com/markbates/goth/providers/google"
 	"github.com/markbates/goth/providers/github"
+	"github.com/markbates/goth/providers/google"
 	config "github.com/sk-pathak/go-structure/configs"
 )
 
 const (
-	MaxAge = 86400*30
+	MaxAge = 86400 * 30
 	isProd = false
 )
 
