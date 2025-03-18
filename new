@@ -1,0 +1,91 @@
+#include <iostream>
+#include <vector>
+#include <map>
+#include <algorithm>
+
+using namespace std;
+
+struct Results {
+    string set_name;
+    vector<string> selected_cards;
+};
+
+vector<int> rank_values = {2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14};
+map<char, int> suit_priority = {{'S', 4}, {'H', 3}, {'D', 2}, {'C', 1}};
+map<string, int> rank_map;
+
+// Populate rank mapping
+void initialize_rank_map() {
+    vector<string> ranks = {"2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A"};
+    for (int i = 0; i < ranks.size(); i++) {
+        rank_map[ranks[i]] = rank_values[i];
+    }
+}
+
+Results solution(vector<string> &cards) {
+    initialize_rank_map();
+    map<string, int> rank_count;
+    map<char, vector<string>> suit_cards;
+    vector<string> sorted_cards = cards;
+
+    // Sort cards by rank
+    sort(sorted_cards.begin(), sorted_cards.end(), [](string a, string b) {
+        return rank_map[a.substr(0, a.size() - 1)] > rank_map[b.substr(0, b.size() - 1)];
+    });
+
+    for (string card : sorted_cards) {
+        string rank = card.substr(0, card.size() - 1);
+        char suit = card.back();
+        rank_count[rank]++;
+        suit_cards[suit].push_back(card);
+    }
+
+    // Check for 'A Triple and A Pair'
+    string triple_rank, pair_rank;
+    for (auto &[rank, count] : rank_count) {
+        if (count == 3) triple_rank = rank;
+        else if (count == 2) pair_rank = rank;
+    }
+    if (!triple_rank.empty() && !pair_rank.empty()) {
+        return {"a triple and a pair", {triple_rank + "S", triple_rank + "H", triple_rank + "D", pair_rank + "S", pair_rank + "H"}};
+    }
+
+    // Check for 'Suit'
+    for (auto &[suit, list] : suit_cards) {
+        if (list.size() >= 5) {
+            return {"suit", vector<string>(list.begin(), list.begin() + 5)};
+        }
+    }
+
+    // Check for 'Five in a Row'
+    vector<string> consecutive_cards;
+    for (int i = 0; i < sorted_cards.size(); i++) {
+        if (i == 0 || rank_map[sorted_cards[i].substr(0, sorted_cards[i].size() - 1)] == 
+                       rank_map[sorted_cards[i - 1].substr(0, sorted_cards[i - 1].size() - 1)] - 1) {
+            consecutive_cards.push_back(sorted_cards[i]);
+            if (consecutive_cards.size() == 5) {
+                return {"five in a row", consecutive_cards};
+            }
+        } else {
+            consecutive_cards.clear();
+            consecutive_cards.push_back(sorted_cards[i]);
+        }
+    }
+
+    // Check for 'Triple'
+    for (auto &[rank, count] : rank_count) {
+        if (count == 3) {
+            return {"triple", {rank + "S", rank + "H", rank + "D"}};
+        }
+    }
+
+    // Check for 'Pair'
+    for (auto &[rank, count] : rank_count) {
+        if (count == 2) {
+            return {"pair", {rank + "S", rank + "H"}};
+        }
+    }
+
+    // Default to 'Single Card'
+    return {"single card", {sorted_cards[0]}};
+}
